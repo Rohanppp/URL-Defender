@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Envs
+.venv/
+.venv310/
+.venv39/
+
+# IDE/OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

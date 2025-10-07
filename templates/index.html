@@ -1,0 +1,146 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="URLDefender — Instantly check if a link looks safe using ML-based phishing detection.">
+    <title>URLDefender</title>
+
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Modern theme -->
+    <link href="{{ url_for('static', filename='app.css') }}" rel="stylesheet">
+  </head>
+  <body>
+    <!-- Top bar / brand -->
+    <nav class="navbar navbar-light" style="background: transparent;">
+      <div class="container">
+        <a class="navbar-brand" href="#">
+          <span class="brand-badge">UD</span>
+          URLDefender
+        </a>
+      </div>
+    </nav>
+
+    <main class="main-wrap">
+      <div class="container">
+        <div class="card card-glass mx-auto">
+          <div class="card-header p-4">
+            <span class="kicker">Smart Protection</span>
+            <h1 class="hero-title h3 mb-0">URLDefender — instantly check if a link looks safe</h1>
+            <p class="subtext mb-0">Paste any URL. We’ll analyze 30+ signals and estimate risk.</p>
+          </div>
+
+          <div class="card-body p-4 p-md-5">
+            <form action="/" method="post" class="row gy-3 align-items-center">
+              <div class="col-12 col-lg-9">
+                <div class="input-wrap">
+                  <input type="url" name="url" id="url" class="form-control url-input py-3"
+                         placeholder="https://example.com" required>
+                </div>
+              </div>
+              <div class="col-12 col-lg-3 d-grid">
+                <button type="submit" class="btn btn-gradient py-3">Analyze URL</button>
+              </div>
+            </form>
+
+            <!-- Result area -->
+            <div id="resultRow" class="result-row mt-4">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+                <div>
+                  <div class="small text-uppercase text-secondary">Result for</div>
+                  <a id="resultUrl" href="#" target="_blank" class="link-dark text-decoration-none fw-semibold">{{ url }}</a>
+                </div>
+                <div>
+                  <span id="resultBadge" class="badge-soft">Pending</span>
+                </div>
+              </div>
+              <div class="mt-3">
+                <div class="progress" role="progressbar" aria-label="Probability" aria-valuemin="0" aria-valuemax="100">
+                  <div id="resultProgress" class="progress-bar" style="width:0%"></div>
+                </div>
+                <div class="mt-2 small subtext" id="resultText">We’ll show the estimated safety/ risk score.</div>
+              </div>
+
+              <div class="mt-3 d-flex gap-2">
+                <a id="primaryCta" class="btn btn-sm btn-outline-primary" href="#" target="_blank">Open link</a>
+                <a id="secondaryCta" class="btn btn-sm btn-outline-warning" href="#" target="_blank">Open anyway (unsafe)</a>
+              </div>
+            </div>
+          </div>
+          
+        </div>
+      </div>
+    </main>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+      // Use server-provided variables when available
+      (function() {
+        const xRaw = '{{ xx }}'; // probability model output (non-phishing prob) from server
+        const serverUrl = '{{ url }}';
+
+        const resultRow = document.getElementById('resultRow');
+        const badge = document.getElementById('resultBadge');
+        const bar = document.getElementById('resultProgress');
+        const text = document.getElementById('resultText');
+        const urlEl = document.getElementById('resultUrl');
+        const primaryCta = document.getElementById('primaryCta');
+        const secondaryCta = document.getElementById('secondaryCta');
+
+        // Always reset UI to clean state first
+        resultRow.style.display = 'none';
+        urlEl.textContent = 'https://example.com';
+        urlEl.removeAttribute('href');
+        primaryCta.removeAttribute('href');
+        secondaryCta.removeAttribute('href');
+        bar.style.width = '0%';
+        bar.classList.remove('success', 'danger');
+        badge.classList.remove('success', 'danger', 'badge-soft');
+        text.textContent = "We’ll show the estimated safety/ risk score.";
+
+        // Only show result panel when server provided a score (>=0)
+        const hasResult = xRaw !== undefined && xRaw !== '' && !isNaN(Number(xRaw)) && Number(xRaw) >= 0;
+        if (!hasResult) return; // leave the clean state
+
+        const x = Number(xRaw);
+        // Original logic flips value when < 0.5
+        let percent = x * 100;
+        let isSafe = x >= 0.50;
+        if (!isSafe) percent = 100 - percent; // show "unsafe" magnitude as percentage
+
+        resultRow.style.display = 'block';
+        if (serverUrl && serverUrl !== 'None') {
+          urlEl.textContent = serverUrl;
+          urlEl.href = serverUrl;
+          primaryCta.href = serverUrl;
+          secondaryCta.href = serverUrl;
+        }
+
+        const pct = Math.max(0, Math.min(100, Math.round(percent)));
+        bar.style.width = pct + '%';
+        if (isSafe) {
+          badge.textContent = 'Likely Safe';
+          badge.classList.add('success');
+          badge.classList.add('badge-soft');
+          bar.classList.add('success');
+          text.textContent = `Estimated ${pct}% safe to use.`;
+          primaryCta.classList.remove('btn-outline-warning');
+          primaryCta.classList.add('btn-outline-primary');
+          secondaryCta.style.display = 'none';
+        } else {
+          badge.textContent = 'Potentially Unsafe';
+          badge.classList.add('danger');
+          badge.classList.add('badge-soft');
+          bar.classList.add('danger');
+          text.textContent = `Estimated ${pct}% unsafe. Proceed with caution.`;
+          primaryCta.style.display = 'none';
+          secondaryCta.classList.add('btn-outline-warning');
+        }
+      })();
+    </script>
+  </body>
+</html>
+

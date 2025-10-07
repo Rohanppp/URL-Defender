@@ -1,0 +1,203 @@
+/* Modern theme for Phishing URL Detection
+   Author: Cascade redesign
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Brand palette (edit these 6 to match your brand) */
+  --brand-primary:  #00c2ff;  /* primary */
+  --brand-secondary:#7b61ff;  /* secondary */
+  --brand-success:  #00e887;  /* success */
+  --brand-warning:  #ffb020;  /* warning */
+  --brand-danger:   #ff5d5d;  /* danger */
+  --brand-info:     #5bc0eb;  /* info */
+
+  /* App theme surface/text */
+  --bg-start: #0b1020;   /* deep navy */
+  --bg-end:   #111827;   /* slate-900 */
+  --card-bg:  rgba(255,255,255,0.08);
+  --glass:    rgba(255,255,255,0.12);
+  --text:     #0f172a;   /* dark text for light theme */
+  --muted:    #475569;   /* slate-600 */
+
+  /* Derived accents used across components */
+  --primary:  var(--brand-primary);
+  --accent:   var(--brand-secondary);
+  --danger:   var(--brand-danger);
+  --success:  var(--brand-success);
+}
+
+/* Map brand palette into Bootstrap CSS variables so Bootstrap components inherit colors */
+:root {
+  --bs-primary:   var(--brand-primary);
+  --bs-secondary: var(--brand-secondary);
+  --bs-success:   var(--brand-success);
+  --bs-info:      var(--brand-info);
+  --bs-warning:   var(--brand-warning);
+  --bs-danger:    var(--brand-danger);
+  --bs-light:     #f8fafc;
+  --bs-dark:      #0b1020;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+  color: var(--text);
+  background: linear-gradient(180deg, #f8fafc, #eef2ff);
+  overflow-x: hidden;
+}
+
+/* Website-themed emoji wallpaper (light, subtle) */
+html::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2; /* farthest back */
+  /* Tiled SVG with emojis: globe, link, lock, shield, search, check */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><rect width='140' height='140' fill='transparent'/><text x='14' y='38' font-size='26'>🌐</text><text x='62' y='30' font-size='22'>🔗</text><text x='100' y='40' font-size='24'>🔒</text><text x='22' y='88' font-size='24'>🛡️</text><text x='84' y='90' font-size='22'>🔍</text><text x='48' y='120' font-size='22'>✅</text></svg>");
+  background-size: 140px 140px;
+  background-repeat: repeat;
+  opacity: 0.07; /* subtle so text stays readable */
+  pointer-events: none;
+}
+
+/* Soft animated beams */
+body::before,
+body::after { display: none !important; }
+
+@keyframes floatBeams {
+  from { transform: translateY(-2%) rotate(0deg); }
+  to   { transform: translateY(2%) rotate(2deg); }
+}
+
+.navbar-brand {
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: #0b1020;
+  font-weight: 800;
+  box-shadow: 0 6px 18px rgba(155,107,255,0.35), 0 2px 6px rgba(46,233,255,0.2);
+}
+
+.main-wrap {
+  min-height: calc(100% - 56px);
+  display: grid;
+  place-items: center;
+  padding: 32px 16px 48px;
+}
+
+.card-glass {
+  width: 100%;
+  max-width: 760px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb; /* gray-200 */
+  border-radius: 16px;
+  box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+}
+
+.card-glass .card-header {
+  border-bottom: 1px solid #eef2f7;
+  background: linear-gradient(180deg, #ffffff, #fafafa);
+}
+
+.kicker {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  background: rgba(34, 211, 238, 0.12);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+h1.hero-title {
+  font-weight: 800;
+  letter-spacing: -0.4px;
+  margin: 6px 0 0 0;
+}
+
+.subtext { color: var(--muted); }
+
+.input-wrap {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 12px;
+  padding: 8px;
+}
+
+.form-control.bg-dark {
+  background-color: #ffffff !important;
+  border: 1px solid #e2e8f0;
+  color: #0f172a;
+}
+.form-control.bg-dark::placeholder { color: #94a3b8; }
+
+.btn-gradient {
+  background: linear-gradient(135deg, var(--brand-primary), var(--brand-secondary));
+  color: #ffffff;
+  border: none;
+  font-weight: 700;
+}
+.btn-gradient:hover {
+  filter: brightness(1.07);
+  box-shadow: 0 12px 26px rgba(46,233,255,0.25), 0 6px 16px rgba(155,107,255,0.25);
+}
+
+/* Ensure Bootstrap primary buttons use brand gradient when desired */
+.btn-primary {
+  background-color: var(--brand-primary);
+  border-color: var(--brand-primary);
+}
+.btn-primary:hover, .btn-primary:focus {
+  background-color: color-mix(in oklab, var(--brand-primary) 80%, white 20%);
+  border-color: color-mix(in oklab, var(--brand-primary) 80%, white 20%);
+}
+
+.link-light { text-underline-offset: 3px; }
+.link-light:hover { text-decoration: underline; }
+
+.result-row { display: none; }
+
+.badge-soft {
+  padding: 8px 12px;
+  border-radius: 999px;
+  font-weight: 700;
+}
+.badge-soft.success { background: color-mix(in srgb, var(--brand-success) 20%, transparent); color: var(--brand-success); box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand-success) 35%, transparent) inset; }
+.badge-soft.danger  { background: color-mix(in srgb, var(--brand-danger) 20%, transparent);  color: var(--brand-danger);  box-shadow: 0 0 0 1px color-mix(in srgb, var(--brand-danger) 35%, transparent) inset; }
+
+.progress {
+  height: 12px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.progress-bar.success { background: linear-gradient(90deg, color-mix(in srgb, var(--brand-success) 85%, #12a36f), var(--brand-success)); }
+.progress-bar.danger  { background: linear-gradient(90deg, var(--brand-danger), #ff8a3d); }
+
+.footer-note { color: var(--muted); font-size: 13px; }
+
+@media (max-width: 576px) {
+  h1.hero-title { font-size: 1.65rem; }
+}
